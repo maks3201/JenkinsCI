@@ -17,7 +17,7 @@ pipeline {
         }
         stage("Delete previous container") {
             steps {
-                sh 'docker stop nginx'
+                sh 'docker stop nginx && docker rm nginx'
             }
         }
 	    
