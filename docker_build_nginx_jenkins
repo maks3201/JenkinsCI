@@ -1,0 +1,23 @@
+#!groovy
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent any
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("Docker build NGINX") {
+            steps {
+		dir ('docker/dockerFileNginx')
+                sh 'docker build -t jenkinsnginx .'
+            }
+        }
+        stage("Show docker images") {
+            steps {
+                sh 'docker images'
+            }
+        }
+    }
+}
