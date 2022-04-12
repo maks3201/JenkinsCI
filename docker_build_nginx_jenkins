@@ -12,7 +12,7 @@ pipeline {
         stage("Docker build NGINX") {
             steps {
 		    dir ('docker/dockerFileNginx'){
-                	sh 'docker build -t jenkinsnginx .'
+                	sh 'docker build -t maks3201/jenkinsnginx .'
 		    }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
 	    
 	stage("Run new container nginx") {
             steps {
-                sh 'docker run -d -p 80:80 --name nginx jenkinsnginx'
+                sh 'docker run -d -p 80:80 --name nginx maks3201/jenkinsnginx'
             }
         }
 	    
