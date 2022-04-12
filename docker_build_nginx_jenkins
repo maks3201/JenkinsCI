@@ -7,26 +7,48 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
-    }
+    	    }
     stages {
         stage("Docker build NGINX") {
             steps {
+		    echo " ============== docker buld =================="
 		    dir ('docker/dockerFileNginx'){
                 	sh 'docker build -t maks3201/jenkinsnginx .'
-		    }
-            }
-        }
+		   				  }
+           	  }
+           }
         stage("Delete previous container") {
             steps {
+		    echo " ============== docker delete =================="
                 sh 'docker stop nginx && docker rm nginx'
-            }
-        }
+            				   }
+       		  }
+	
+	stages {
+        stage("docker login") {
+            steps {
+                echo " ============== docker login =================="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_maks3201', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD
+                    """
+                  }
+          		      }
+	       }
 	    
 	stage("Run new container nginx") {
             steps {
+		    echo " ============== docker run =================="
                 sh 'docker run -d -p 80:80 --name nginx maks3201/jenkinsnginx'
-            }
-        }
+            	  }
+        				  }
+		
+	stage("Docker push image") {
+            steps {
+		    echo " ============== docker push =================="
+                sh 'docker push maks3201/jenkinsnginx'
+                   }
+        			    }
 	    
 	    
     }
