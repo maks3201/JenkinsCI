@@ -10,14 +10,23 @@ pipeline {
     stages {
         stage("Docker build NGINX") {
             steps {
-		dir ('docker/dockerFileNginx')
-                sh 'docker build -t jenkinsnginx .'
+		    dir ('docker/dockerFileNginx'){
+                	sh 'docker build -t jenkinsnginx .'
+		    }
             }
         }
-        stage("Show docker images") {
+        stage("Delete previous container") {
             steps {
-                sh 'docker images'
+                sh 'docker stop nginx && docker rm nginx'
             }
         }
+	    
+	stage("Run new container nginx") {
+            steps {
+                sh 'docker run -d -p 80:80 --name nginx jenkinsnginx'
+            }
+        }
+	    
+	    
     }
 }
